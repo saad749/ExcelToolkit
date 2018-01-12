@@ -16,7 +16,7 @@ namespace ExcelToolkit.FormUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new formMain());
+            Application.Run(new FormMain());
         }
     }
 }

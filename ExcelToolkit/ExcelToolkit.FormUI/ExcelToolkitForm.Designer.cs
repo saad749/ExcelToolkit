@@ -1,6 +1,6 @@
 ﻿namespace ExcelToolkit.FormUI
 {
-    partial class formMain
+    partial class FormMain
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(formMain));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.btnOpenFolderDialog = new System.Windows.Forms.Button();
             this.txtFolderPath = new System.Windows.Forms.TextBox();
             this.pnlSub = new System.Windows.Forms.Panel();
@@ -141,7 +141,7 @@
             // tsmiExit
             // 
             this.tsmiExit.Name = "tsmiExit";
-            this.tsmiExit.Size = new System.Drawing.Size(152, 22);
+            this.tsmiExit.Size = new System.Drawing.Size(92, 22);
             this.tsmiExit.Text = "&Exit";
             this.tsmiExit.Click += new System.EventHandler(this.tsmiExit_Click);
             // 
@@ -168,7 +168,7 @@
             this.tsmiAbout.Text = "&About";
             this.tsmiAbout.Click += new System.EventHandler(this.tsmiAbout_Click);
             // 
-            // formMain
+            // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -176,7 +176,7 @@
             this.Controls.Add(this.pnlMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.msMain;
-            this.Name = "formMain";
+            this.Name = "FormMain";
             this.Text = "Excel Toolkit";
             this.pnlSub.ResumeLayout(false);
             this.pnlMain.ResumeLayout(false);

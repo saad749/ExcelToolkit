@@ -14,10 +14,10 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace ExcelToolkit.FormUI
 {
-    public partial class formMain : Form
+    public partial class FormMain : Form
     {
        
-        public formMain()
+        public FormMain()
         {
             InitializeComponent();
         }
