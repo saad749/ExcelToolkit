@@ -65,80 +65,45 @@ namespace ExcelToolkit.FormUI
             tvFiles.ExpandAll();
 
         }
+        //Use background worker here!
         private void btnRename_Click(object sender, EventArgs e)
         {
             pnlMain.Enabled = false;
-            pnlMain.Visible = false;
-
-            Label lblLoading = new Label()
-            {
-                AutoSize = true,
-                Text = "Please Wait ...",
-                ForeColor = System.Drawing.Color.Green,
-                Font = new System.Drawing.Font("Verdana", 24, FontStyle.Bold)
-            };
-            lblLoading.Top = (pnlMain.Height / 2) - (lblLoading.Height);
-            lblLoading.Left = (pnlMain.Width / 2) - (lblLoading.Width);
-            this.Controls.Add(lblLoading);
-            this.Refresh();
+            
 
             var path = txtFolderPath.Text + "\\";
 
 
+            List<TreeViewNode> rootNodes = new List<TreeViewNode>();
             foreach (TreeNode fileNode in tvFiles.Nodes)
             {
-                if(fileNode.Text != fileNode.Tag.ToString())
+                var rootNode = new TreeViewNode
                 {
-                    File.Move(path + fileNode.Tag.ToString(), path + fileNode.Text);
-                }
-
-                bool isAnySheetRenamed = false;
+                    Text = fileNode.Text,
+                    Tag = fileNode.Tag.ToString(),
+                    Nodes = new List<TreeViewNode>()
+                };
                 foreach (TreeNode sheetNode in fileNode.Nodes)
                 {
-                    if (sheetNode.Text != sheetNode.Tag.ToString())
+                    TreeViewNode childNode = new TreeViewNode
                     {
-                        isAnySheetRenamed = true;
-                    }
+                        Text = sheetNode.Text,
+                        Tag = sheetNode.Tag.ToString(),
+                        Parent = rootNode,
+                        BackColor = sheetNode.BackColor,
+                        TooltipText = sheetNode.ToolTipText
+                    };
+                    rootNode.Nodes.Add(childNode);
                 }
+                rootNodes.Add(rootNode);
 
-                if (isAnySheetRenamed)
-                {
-                    using (SpreadsheetDocument document = SpreadsheetDocument.Open(path + fileNode.Text, true))
-                    {
-                        WorkbookPart wbPart = document.WorkbookPart;
-                        foreach (Sheet sheet in wbPart.Workbook.Sheets)
-                        {
-                            foreach (TreeNode sheetNode in fileNode.Nodes)
-                            {
-                                if (sheetNode.Tag.ToString() == sheet.Name && sheetNode.Text != sheetNode.Tag.ToString())
-                                {
-                                    sheet.Name = sheetNode.Text;
-                                }
-                            }
-                        }
-                        document.Save();
-                    }
-                }
             }
 
-            PopulateTreeView(txtFolderPath.Text);
-            MessageBox.Show("The items have been renamed successfully", "Rename Successfull");
-            pnlMain.Enabled = true;
-            pnlMain.Visible = true;
-            this.Controls.Remove(lblLoading);
-            this.Refresh();
-        }
-
-        public string[] GetSheetNames(FileInfo file)
-        {
-            List<string> sheets = new List<string>();
-            var items = GetAllWorksheets(file.FullName);
-            foreach (Sheet sheet in items)
+            bgwRename.RunWorkerAsync(new RenameMetadata()
             {
-                sheets.Add(sheet.Name);
-            }
-
-            return sheets.ToArray();
+                RootNodes = rootNodes,
+                Path = path
+            });
         }
 
         // Retrieve a List of all the sheets in a workbook.
@@ -205,6 +170,70 @@ namespace ExcelToolkit.FormUI
                 Environment.NewLine + Environment.NewLine +
                 "http://saadfarooq.net",
                 "Getting Started");
+        }
+
+        private void bgwRename_DoWork(object sender, DoWorkEventArgs e)
+        {
+            RenameMetadata meta = e.Argument as RenameMetadata;
+            int i = 0;
+            int total = meta.RootNodes.Count;
+            foreach (TreeViewNode fileNode in meta.RootNodes)
+            {
+                if (fileNode.Text != fileNode.Tag.ToString())
+                {
+                    File.Move(meta.Path + fileNode.Tag.ToString(), meta.Path + fileNode.Text);
+                }
+
+                bool isAnySheetRenamed = false;
+                foreach (TreeViewNode sheetNode in fileNode.Nodes)
+                {
+                    if (sheetNode.Text != sheetNode.Tag.ToString())
+                    {
+                        isAnySheetRenamed = true;
+                    }
+                }
+
+                if (isAnySheetRenamed)
+                {
+                    using (SpreadsheetDocument document = SpreadsheetDocument.Open(meta.Path + fileNode.Text, true))
+                    {
+                        WorkbookPart wbPart = document.WorkbookPart;
+                        foreach (Sheet sheet in wbPart.Workbook.Sheets)
+                        {
+                            foreach (TreeViewNode sheetNode in fileNode.Nodes)
+                            {
+                                if (sheetNode.Tag.ToString() == sheet.Name && sheetNode.Text != sheetNode.Tag.ToString())
+                                {
+                                    sheet.Name = sheetNode.Text;
+                                }
+                            }
+                        }
+                        document.Save();
+                    }
+                }
+
+                int percentage = (i * 100) / total;
+                bgwRename.ReportProgress(percentage);
+                i++;
+            }
+        }
+
+        private void bgwRename_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            lbRenameProgress.Text = "100%";
+            pbRename.Value = 100;
+            PopulateTreeView(txtFolderPath.Text);
+            pnlMain.Enabled = true;
+            
+            MessageBox.Show("The items have been renamed successfully", "Rename Successfull");
+            pbRename.Value = 0;
+            lbRenameProgress.Text = "Ready";
+        }
+
+        private void bgwRename_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            pbRename.Value = e.ProgressPercentage;
+            lbRenameProgress.Text = e.ProgressPercentage + "%";
         }
     }
 }

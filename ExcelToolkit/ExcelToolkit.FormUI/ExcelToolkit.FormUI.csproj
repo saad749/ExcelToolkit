@@ -158,6 +158,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RenameMetadata.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TreeViewNode.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <EmbeddedResource Include="ExcelToolkitForm.resx">
       <DependentUpon>ExcelToolkitForm.cs</DependentUpon>
     </EmbeddedResource>
