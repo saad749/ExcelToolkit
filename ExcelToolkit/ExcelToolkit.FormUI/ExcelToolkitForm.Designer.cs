@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.btnOpenFolderDialog = new System.Windows.Forms.Button();
             this.txtFolderPath = new System.Windows.Forms.TextBox();
-            this.pnlSub = new System.Windows.Forms.Panel();
+            this.pnlFileRename = new System.Windows.Forms.Panel();
             this.btnRename = new System.Windows.Forms.Button();
             this.tvFiles = new System.Windows.Forms.TreeView();
             this.pnlMain = new System.Windows.Forms.Panel();
@@ -45,15 +45,19 @@
             this.tsmiGettingStarted = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.bgwRename = new System.ComponentModel.BackgroundWorker();
-            this.pnlSub.SuspendLayout();
+            this.pnlColumnRename = new System.Windows.Forms.Panel();
+            this.dgvColumns = new System.Windows.Forms.DataGridView();
+            this.pnlFileRename.SuspendLayout();
             this.pnlMain.SuspendLayout();
             this.msMain.SuspendLayout();
+            this.pnlColumnRename.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvColumns)).BeginInit();
             this.SuspendLayout();
             // 
             // btnOpenFolderDialog
             // 
             this.btnOpenFolderDialog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOpenFolderDialog.Location = new System.Drawing.Point(672, 26);
+            this.btnOpenFolderDialog.Location = new System.Drawing.Point(1072, 26);
             this.btnOpenFolderDialog.Name = "btnOpenFolderDialog";
             this.btnOpenFolderDialog.Size = new System.Drawing.Size(95, 23);
             this.btnOpenFolderDialog.TabIndex = 1;
@@ -67,20 +71,19 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFolderPath.Location = new System.Drawing.Point(12, 28);
             this.txtFolderPath.Name = "txtFolderPath";
-            this.txtFolderPath.Size = new System.Drawing.Size(654, 20);
+            this.txtFolderPath.Size = new System.Drawing.Size(1054, 20);
             this.txtFolderPath.TabIndex = 2;
             // 
-            // pnlSub
+            // pnlFileRename
             // 
-            this.pnlSub.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlSub.Controls.Add(this.btnRename);
-            this.pnlSub.Controls.Add(this.tvFiles);
-            this.pnlSub.Location = new System.Drawing.Point(12, 54);
-            this.pnlSub.Name = "pnlSub";
-            this.pnlSub.Size = new System.Drawing.Size(760, 682);
-            this.pnlSub.TabIndex = 4;
+            this.pnlFileRename.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.pnlFileRename.Controls.Add(this.btnRename);
+            this.pnlFileRename.Controls.Add(this.tvFiles);
+            this.pnlFileRename.Location = new System.Drawing.Point(12, 54);
+            this.pnlFileRename.Name = "pnlFileRename";
+            this.pnlFileRename.Size = new System.Drawing.Size(360, 682);
+            this.pnlFileRename.TabIndex = 4;
             // 
             // btnRename
             // 
@@ -93,7 +96,7 @@
             this.btnRename.ForeColor = System.Drawing.Color.White;
             this.btnRename.Location = new System.Drawing.Point(0, 627);
             this.btnRename.Name = "btnRename";
-            this.btnRename.Size = new System.Drawing.Size(755, 52);
+            this.btnRename.Size = new System.Drawing.Size(355, 52);
             this.btnRename.TabIndex = 2;
             this.btnRename.Text = "RENAME";
             this.btnRename.UseVisualStyleBackColor = false;
@@ -108,31 +111,33 @@
             this.tvFiles.Location = new System.Drawing.Point(0, 3);
             this.tvFiles.Name = "tvFiles";
             this.tvFiles.ShowNodeToolTips = true;
-            this.tvFiles.Size = new System.Drawing.Size(755, 618);
+            this.tvFiles.Size = new System.Drawing.Size(355, 618);
             this.tvFiles.TabIndex = 0;
             this.tvFiles.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.tvFiles_AfterLabelEdit);
             this.tvFiles.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvFiles_NodeMouseClick);
             // 
             // pnlMain
             // 
+            this.pnlMain.Controls.Add(this.pnlColumnRename);
             this.pnlMain.Controls.Add(this.lbRenameProgress);
             this.pnlMain.Controls.Add(this.pbRename);
             this.pnlMain.Controls.Add(this.statusStrip1);
             this.pnlMain.Controls.Add(this.btnOpenFolderDialog);
             this.pnlMain.Controls.Add(this.txtFolderPath);
-            this.pnlMain.Controls.Add(this.pnlSub);
+            this.pnlMain.Controls.Add(this.pnlFileRename);
             this.pnlMain.Controls.Add(this.msMain);
             this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMain.Location = new System.Drawing.Point(0, 0);
             this.pnlMain.Name = "pnlMain";
-            this.pnlMain.Size = new System.Drawing.Size(784, 761);
+            this.pnlMain.Size = new System.Drawing.Size(1184, 761);
             this.pnlMain.TabIndex = 5;
             // 
             // lbRenameProgress
             // 
+            this.lbRenameProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lbRenameProgress.AutoSize = true;
             this.lbRenameProgress.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbRenameProgress.Location = new System.Drawing.Point(469, 742);
+            this.lbRenameProgress.Location = new System.Drawing.Point(869, 742);
             this.lbRenameProgress.Name = "lbRenameProgress";
             this.lbRenameProgress.Size = new System.Drawing.Size(38, 13);
             this.lbRenameProgress.TabIndex = 8;
@@ -140,7 +145,8 @@
             // 
             // pbRename
             // 
-            this.pbRename.Location = new System.Drawing.Point(511, 742);
+            this.pbRename.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbRename.Location = new System.Drawing.Point(911, 742);
             this.pbRename.Name = "pbRename";
             this.pbRename.Size = new System.Drawing.Size(256, 16);
             this.pbRename.TabIndex = 7;
@@ -149,7 +155,7 @@
             // 
             this.statusStrip1.Location = new System.Drawing.Point(0, 739);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(784, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1184, 22);
             this.statusStrip1.TabIndex = 6;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -160,7 +166,7 @@
             this.helpToolStripMenuItem});
             this.msMain.Location = new System.Drawing.Point(0, 0);
             this.msMain.Name = "msMain";
-            this.msMain.Size = new System.Drawing.Size(784, 24);
+            this.msMain.Size = new System.Drawing.Size(1184, 24);
             this.msMain.TabIndex = 5;
             this.msMain.Text = "Menu";
             // 
@@ -209,21 +215,44 @@
             this.bgwRename.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgwRename_ProgressChanged);
             this.bgwRename.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwRename_RunWorkerCompleted);
             // 
+            // pnlColumnRename
+            // 
+            this.pnlColumnRename.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlColumnRename.Controls.Add(this.dgvColumns);
+            this.pnlColumnRename.Location = new System.Drawing.Point(379, 54);
+            this.pnlColumnRename.Name = "pnlColumnRename";
+            this.pnlColumnRename.Size = new System.Drawing.Size(788, 679);
+            this.pnlColumnRename.TabIndex = 9;
+            // 
+            // dgvColumns
+            // 
+            this.dgvColumns.AllowUserToDeleteRows = false;
+            this.dgvColumns.AllowUserToOrderColumns = true;
+            this.dgvColumns.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvColumns.Location = new System.Drawing.Point(4, 4);
+            this.dgvColumns.Name = "dgvColumns";
+            this.dgvColumns.Size = new System.Drawing.Size(781, 617);
+            this.dgvColumns.TabIndex = 0;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 761);
+            this.ClientSize = new System.Drawing.Size(1184, 761);
             this.Controls.Add(this.pnlMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.msMain;
             this.Name = "FormMain";
             this.Text = "Excel Toolkit";
-            this.pnlSub.ResumeLayout(false);
+            this.pnlFileRename.ResumeLayout(false);
             this.pnlMain.ResumeLayout(false);
             this.pnlMain.PerformLayout();
             this.msMain.ResumeLayout(false);
             this.msMain.PerformLayout();
+            this.pnlColumnRename.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvColumns)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -231,7 +260,7 @@
         #endregion
         private System.Windows.Forms.Button btnOpenFolderDialog;
         private System.Windows.Forms.TextBox txtFolderPath;
-        private System.Windows.Forms.Panel pnlSub;
+        private System.Windows.Forms.Panel pnlFileRename;
         private System.Windows.Forms.Panel pnlMain;
         private System.Windows.Forms.Button btnRename;
         private System.Windows.Forms.TreeView tvFiles;
@@ -245,6 +274,8 @@
         private System.Windows.Forms.ProgressBar pbRename;
         private System.ComponentModel.BackgroundWorker bgwRename;
         private System.Windows.Forms.Label lbRenameProgress;
+        private System.Windows.Forms.Panel pnlColumnRename;
+        private System.Windows.Forms.DataGridView dgvColumns;
     }
 }
 
