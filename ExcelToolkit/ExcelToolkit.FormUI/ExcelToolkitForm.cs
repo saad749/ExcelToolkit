@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using DocumentFormat.OpenXml.Packaging;
@@ -20,6 +15,7 @@ namespace ExcelToolkit.FormUI
         public FormMain()
         {
             InitializeComponent();
+            txtLogs.Text += "Application Version: " + Application.ProductVersion;
         }
 
         private void btnOpenFolderDialog_Click(object sender, EventArgs e)
@@ -28,7 +24,19 @@ namespace ExcelToolkit.FormUI
             cofdMain.IsFolderPicker = true;
             if (cofdMain.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                PopulateTreeView(cofdMain.FileName);
+                try {
+                    PopulateTreeView(cofdMain.FileName);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occured during the process" + Environment.NewLine + Environment.NewLine +
+                        ex.Message + Environment.NewLine + Environment.NewLine +
+                        ex?.InnerException?.Message + Environment.NewLine + Environment.NewLine +
+                        ex.StackTrace
+                        ,
+                        "Unknown Error");
+                }
+                
             }
         }
 
@@ -110,9 +118,10 @@ namespace ExcelToolkit.FormUI
         // The Sheets class contains a collection of 
         // OpenXmlElement objects, each representing one of 
         // the sheets.
-        public static Sheets GetAllWorksheets(string fileName)
+        public Sheets GetAllWorksheets(string fileName)
         {
             Sheets theSheets = null;
+            txtLogs.Text += "Found File: " + fileName + Environment.NewLine;
 
             using (SpreadsheetDocument document =
                 SpreadsheetDocument.Open(fileName, false))
@@ -151,7 +160,7 @@ namespace ExcelToolkit.FormUI
 
         private void tsmiAbout_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("v1.0.0" + Environment.NewLine +
+            MessageBox.Show($"v{Application.ProductVersion}" + Environment.NewLine +
                 "Developed by Saad Farooq" + Environment.NewLine +
                 "http://saadfarooq.net",
                 "About Excel Toolkit");
@@ -174,6 +183,7 @@ namespace ExcelToolkit.FormUI
 
         private void bgwRename_DoWork(object sender, DoWorkEventArgs e)
         {
+            var logs = "";
             RenameMetadata meta = e.Argument as RenameMetadata;
             int i = 0;
             int total = meta.RootNodes.Count;
@@ -181,7 +191,16 @@ namespace ExcelToolkit.FormUI
             {
                 if (fileNode.Text != fileNode.Tag.ToString())
                 {
-                    File.Move(meta.Path + fileNode.Tag.ToString(), meta.Path + fileNode.Text);
+                    try
+                    {
+                        File.Move(meta.Path + fileNode.Tag.ToString(), meta.Path + fileNode.Text);
+                    }
+                    catch(IOException ex)
+                    {
+                        logs += $"Exception when renaming {fileNode.Tag.ToString()} to {fileNode.Text}" + Environment.NewLine;
+                        logs += ex.Message + Environment.NewLine;
+                    }
+                    
                 }
 
                 bool isAnySheetRenamed = false;
@@ -213,7 +232,7 @@ namespace ExcelToolkit.FormUI
                 }
 
                 int percentage = (i * 100) / total;
-                bgwRename.ReportProgress(percentage);
+                bgwRename.ReportProgress(percentage, logs);
                 i++;
             }
         }
@@ -234,6 +253,7 @@ namespace ExcelToolkit.FormUI
         {
             pbRename.Value = e.ProgressPercentage;
             lbRenameProgress.Text = e.ProgressPercentage + "%";
+            txtLogs.Text += e.UserState as string;
         }
     }
 }
