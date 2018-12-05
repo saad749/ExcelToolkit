@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System.Reflection;
 
 namespace ExcelToolkit.FormUI
 {
@@ -15,7 +16,8 @@ namespace ExcelToolkit.FormUI
         public FormMain()
         {
             InitializeComponent();
-            txtLogs.Text += "Application Version: " + Application.ProductVersion;
+            txtLogs.Text += "Application Version: " + Assembly.GetExecutingAssembly().GetName().Version + Environment.NewLine;
+            
         }
 
         private void btnOpenFolderDialog_Click(object sender, EventArgs e)
@@ -160,7 +162,7 @@ namespace ExcelToolkit.FormUI
 
         private void tsmiAbout_Click(object sender, EventArgs e)
         {
-            MessageBox.Show($"v{Application.ProductVersion}" + Environment.NewLine +
+            MessageBox.Show($"v{Assembly.GetExecutingAssembly().GetName().Version + Environment.NewLine}" + Environment.NewLine +
                 "Developed by Saad Farooq" + Environment.NewLine +
                 "http://saadfarooq.net",
                 "About Excel Toolkit");
